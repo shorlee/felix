@@ -1,6 +1,12 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\docs",
+    "\\felix",
+    "\\felix\\test",
+    "\\modules",
+    "\\modules\\DynamixelSDK"
   ],
+  "SelectedNode": "\\.gitignore",
   "PreviewInSolutionExplorer": false
 }

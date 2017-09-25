@@ -1,0 +1,10 @@
+﻿# Ignore Visual Studio temporary files
+.vs/
+
+# User-specific files
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+*.sqlite
