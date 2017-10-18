@@ -3,10 +3,8 @@
     "",
     "\\docs",
     "\\felix",
-    "\\felix\\test",
-    "\\modules",
-    "\\modules\\DynamixelSDK"
+    "\\felix\\test"
   ],
-  "SelectedNode": "\\.gitignore",
+  "SelectedNode": "\\felix\\test",
   "PreviewInSolutionExplorer": false
 }
