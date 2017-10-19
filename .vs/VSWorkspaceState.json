@@ -3,8 +3,9 @@
     "",
     "\\docs",
     "\\felix",
+    "\\felix\\DynamixelSDK",
     "\\felix\\test"
   ],
-  "SelectedNode": "\\felix\\test",
+  "SelectedNode": "\\felix\\test\\test_felix.py",
   "PreviewInSolutionExplorer": false
 }

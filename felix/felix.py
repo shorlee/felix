@@ -1,91 +1,20 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# felix main file, copied from ping example by author Ryu Woon Jung (Leon)
+# ------------------------------------------------
+# Fachhochschule Bielefeld
+# Ingenieurwissenschaften und Mathematik
+# Ingenieurinformatik - Studienarbeit
+# Marcel Bernauer, Michel Asmus, Phil Petschull
+# ------------------------------------------------
+# project: felix
+# main
+# edited: 2017-10-19 16:00 (marcel)
+# ------------------------------------------------
+# TODO:
+# a)
 
-#
-# *********     ping Example      *********
-#
-#
-# Available Dynamixel model on this example : All models using Protocol 2.0
-# This example is designed for using a Dynamixel PRO 54-200, and an USB2DYNAMIXEL.
-# To use another Dynamixel model, such as X series, see their details in E-Manual(support.robotis.com) and edit below variables yourself.
-# Be sure that Dynamixel PRO properties are already set as %% ID : 1 / Baudnum : 1 (Baudrate : 57600)
-#
+from leg import leg
 
-import os
-
-if os.name == 'nt':
-    import msvcrt
-    def getch():
-        return msvcrt.getch().decode()
-else:
-    import sys, tty, termios
-    fd = sys.stdin.fileno()
-    old_settings = termios.tcgetattr(fd)
-    def getch():
-        try:
-            tty.setraw(sys.stdin.fileno())
-            ch = sys.stdin.read(1)
-        finally:
-            termios.tcsetattr(fd, termios.TCSADRAIN, old_settings)
-        return ch
-
-from DynamixelSDK import dynamixel_functions as dynamixel                    # Uses Dynamixel SDK library
-
-# Protocol version
-PROTOCOL_VERSION            = 2                             # See which protocol version is used in the Dynamixel
-
-# Default setting
-DXL_ID                      = 1                             # Dynamixel ID: 1
-BAUDRATE                    = 1000000
-DEVICENAME                  = "COM3".encode('utf-8')		# Check which port is being used on your controller
-                                                            # Windows: "COM1"   Linux: "/dev/ttyUSB0" Mac: "/dev/tty.usbserial-*"
-															# and add .encode('utf-8') !
-
-COMM_SUCCESS                = 0                             # Communication Success result value
-COMM_TX_FAIL                = -1001                         # Communication Tx Failed
-
-# Initialize PortHandler Structs
-# Set the port path
-# Get methods and members of PortHandlerLinux or PortHandlerWindows
-port_num = dynamixel.portHandler(DEVICENAME)
-
-# Initialize PacketHandler Structs
-dynamixel.packetHandler()
-
-dxl_comm_result = COMM_TX_FAIL                              # Communication result
-
-# Open port
-if dynamixel.openPort(port_num):
-    print("Succeeded to open the port!")
-else:
-    print("Failed to open the port!")
-    print("Press any key to terminate...")
-    getch()
-    quit()
-
-# Set port baudrate
-if dynamixel.setBaudRate(port_num, BAUDRATE):
-    print("Succeeded to change the baudrate!")
-else:
-    print("Failed to change the baudrate!")
-    print("Press any key to terminate...")
-    getch()
-    quit()
-
-
-# Try to ping the Dynamixel
-# Get Dynamixel model number
-dxl_model_number = dynamixel.pingGetModelNum(port_num, PROTOCOL_VERSION, DXL_ID)
-dxl_comm_result = dynamixel.getLastTxRxResult(port_num, PROTOCOL_VERSION)
-dxl_error = dynamixel.getLastRxPacketError(port_num, PROTOCOL_VERSION)
-if dxl_comm_result != COMM_SUCCESS:
-    print(dynamixel.getTxRxResult(PROTOCOL_VERSION, dxl_comm_result))
-elif dxl_error != 0:
-    print(dynamixel.getRxPacketError(PROTOCOL_VERSION, dxl_error))
-else:
-    print("[ID:%03d] ping Succeeded. Dynamixel model number : %d" % (DXL_ID, dxl_model_number))
-
-# Close port
-dynamixel.closePort(port_num)
+# Wake up...
+felix = leg()
