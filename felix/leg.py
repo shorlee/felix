@@ -18,12 +18,12 @@
 
 
 import os
-
-try:
-    import servo
-except Exception as e:
-    print("Error: Importing servo failed!")
-    print(e)
+import servo
+# try:
+#     import servo
+# except Exception as e:
+#     print("Error: Importing servo failed!")
+#     print(e)
 
 
 class leg:
@@ -93,3 +93,7 @@ class leg:
         for i in self.servos:
             position.append(i.read_present_position())
         return position
+
+    def end_communication(self):
+        self.servos[0].close_port
+        return

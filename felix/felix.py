@@ -17,7 +17,11 @@
 from leg import leg
 from dict_servo import servo_all
 
-DEVICENAME = "COM7".encode('utf-8')
+DEVICENAME = "COM3".encode('utf-8')
 
 # Wake up...
 felix = leg(servo_all,DEVICENAME)
+felix.enable_torque()
+input("Will diable torque")
+felix.disable_torque()
+felix.end_communication()

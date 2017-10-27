@@ -15,12 +15,14 @@
 # a) servo. ?? -> self. !!
 
 import os
-
-try:
-    from DynamixelSDK import dynamixel_functions as dynamixel 
-except Exception as e:
-    print("Error: Importing dynamixel_functions failed!")
-    print(e)
+#print(os.sys.path)
+#os.sys.path.append('/DynamixelSDK')
+import dynamixel_functions as dynamixel
+# try:
+#     import dynamixel_functions as dynamixel
+# except Exception as e:
+#     print("Error: Importing dynamixel_functions failed!")
+#     print(e)
 
 
 class servo:
