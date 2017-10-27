@@ -15,6 +15,9 @@
 # a)
 
 from leg import leg
+from dict_servo import servo_all
+
+DEVICENAME = "COM7".encode('utf-8')
 
 # Wake up...
-felix = leg()
+felix = leg(servo_all,DEVICENAME)
