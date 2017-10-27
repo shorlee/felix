@@ -14,6 +14,7 @@
 # TODO:
 # a) from servo import servo
 # b) for servo in self.servos
+# c) debug at import
 
 
 import os
