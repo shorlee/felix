@@ -82,6 +82,10 @@ class leg:
         for l in range(self.num_servo):
             self.servos[l].write_position(pos[l])
 
+    # Moves only one motor to its target positions
+    def move_servo_to_position(self, servoID, pos):
+        self.servos[servoID].write_position(pos)
+
     # Sets desired velocity of movement for all motors
     def set_speed(self, speed):
         for i in range(len(self.servos)):
@@ -93,6 +97,16 @@ class leg:
         for i in self.servos:
             position.append(i.read_present_position())
         return position
+
+    def get_servo_current_position(self, servoID):
+        return self.servos[servoID].read_present_position()
+
+    def test_position(self,pos,offset):
+        current_pos=self.get_current_position()
+        for i in range(len(pos)):
+            if (pos[i]>(current_pos[i]+offset)) or (pos[i]<(current_pos[i]-offset)):
+                return False
+        return True
 
     def end_communication(self):
         self.servos[0].close_port
