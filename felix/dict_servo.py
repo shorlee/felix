@@ -5,7 +5,11 @@ servo1={
     "POSITION_MINIMUM"  : -75000,
     "POSITION_MAXIMUM"  : 75000,
     "CLOCKWISE"         : 1,
-    "SPEED_MAXIMUM"     : 10000
+    "SPEED_MAXIMUM"     : 10000,
+    "DH_Theta"          : 0,
+    "DH_d"              : 0,
+    "DH_a"              : 0,
+    "DH_Alpha"          : 0
 }
 
 servo2={
@@ -14,7 +18,11 @@ servo2={
     "POSITION_MINIMUM"  : -75000,
     "POSITION_MAXIMUM"  : 75000,
     "CLOCKWISE"         : 1,
-    "SPEED_MAXIMUM"     : 10000
+    "SPEED_MAXIMUM"     : 10000,
+    "DH_Theta"          : 0,
+    "DH_d"              : 0,
+    "DH_a"              : 0,
+    "DH_Alpha"          : 0
 }
 
 servo3={
@@ -23,7 +31,11 @@ servo3={
     "POSITION_MINIMUM"  : -45000,
     "POSITION_MAXIMUM"  : 75000,
     "CLOCKWISE"         : 1,
-    "SPEED_MAXIMUM"     : 10000
+    "SPEED_MAXIMUM"     : 10000,
+    "DH_Theta": 0,
+    "DH_d": 0,
+    "DH_a": 0,
+    "DH_Alpha": 0
 }
 
 servo4={
@@ -32,7 +44,11 @@ servo4={
     "POSITION_MINIMUM"  : -75000,
     "POSITION_MAXIMUM"  : 75000,
     "CLOCKWISE"         : 1,
-    "SPEED_MAXIMUM"     : 10000
+    "SPEED_MAXIMUM"     : 10000,
+    "DH_Theta": 0,
+    "DH_d": 0,
+    "DH_a": 0,
+    "DH_Alpha": 0
 }
 
 servo_all=[servo1,servo2,servo3,servo4]
