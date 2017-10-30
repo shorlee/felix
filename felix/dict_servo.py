@@ -1,3 +1,18 @@
+#!/usr/bin/env python
+# -*- coding: utf-8 -*-
+
+# ------------------------------------------------
+# Fachhochschule Bielefeld
+# Ingenieurwissenschaften und Mathematik
+# Ingenieurinformatik - Studienarbeit
+# Michel Asmus, Marcel Bernauer, Phil Petschull
+# ------------------------------------------------
+# project: felix
+# servo-specific settings
+# ------------------------------------------------
+# TODO:
+# a)
+
 
 servo1={
     "ID"                : 1,

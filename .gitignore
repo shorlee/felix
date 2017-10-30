@@ -38,3 +38,5 @@ var/
 *.sln.docstates
 
 *.sqlite
+*.sqlite
+*.sqlite

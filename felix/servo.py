@@ -5,19 +5,18 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Marcel Bernauer, Michel Asmus, Phil Petschull
+# Michel Asmus, Marcel Bernauer, Phil Petschull
 # ------------------------------------------------
 # project: felix
-# servo-class by michel
-# edited: 2017-10-19 16:00 (marcel)
+# servo-class
 # ------------------------------------------------
 # TODO:
 # a) servo. ?? -> self. !!
 
 import os
 #print(os.sys.path)
-#os.sys.path.append('/DynamixelSDK')
-import dynamixel_functions as dynamixel
+os.sys.path.append('/DynamixelSDK')
+from DynamixelSDK.python.dynamixel_functions_py import dynamixel_functions as dynamixel
 # try:
 #     import dynamixel_functions as dynamixel
 # except Exception as e:
