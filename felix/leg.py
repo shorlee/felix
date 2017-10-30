@@ -101,12 +101,14 @@ class leg:
     def get_servo_current_position(self, servoID):
         return self.servos[servoID].read_present_position()
 
+
     def test_position(self,pos,offset):
         current_pos=self.get_current_position()
         for i in range(len(pos)):
-            if (pos[i]>(current_pos[i]+offset)) or (pos[i]<(current_pos[i]-offset)):
+            if  (pos[i]>(current_pos[i]+offset) or pos[i]<(current_pos[i]-offset)):
                 return False
-        return True
+            else:
+                return True
 
     def end_communication(self):
         self.servos[0].close_port
