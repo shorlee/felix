@@ -152,11 +152,14 @@ class servo:
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
         if dxl_comm_result == servo.COMM_SUCCESS:
             return dxl_present_position
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        else:
+            if servo.debug:
+                if dxl_comm_result != servo.COMM_SUCCESS:
+                    print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+                elif dxl_error != 0:
+                    print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+            return servo.read_present_position(self)
+
 
     # Sets desired velocity of movement
     def write_velocity(self, dxl_goal_velocity):
