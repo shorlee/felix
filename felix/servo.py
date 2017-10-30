@@ -10,13 +10,11 @@
 # project: felix
 # servo-class
 # ------------------------------------------------
-# TODO:
-# a) servo. ?? -> self. !!
 
 import os
-#print(os.sys.path)
-os.sys.path.append('/DynamixelSDK')
-from DynamixelSDK.python.dynamixel_functions_py import dynamixel_functions as dynamixel
+
+import dynamixel_functions as dynamixel
+
 # try:
 #     import dynamixel_functions as dynamixel
 # except Exception as e:
