@@ -34,29 +34,6 @@ for id in range(len(pos)):
     while felix.get_servo_current_position(id) > (pos[id] + 10) or felix.get_servo_current_position(id) < (pos[id] - 10):
         time.sleep(0.1)
 
-
-# felix.move_servo_to_position(id, pos)
-# while felix.get_servo_current_position(id)>(pos+10) or felix.get_servo_current_position(id)<(pos-10):
-#     time.sleep(0.1)
-#
-# id=1
-# felix.move_servo_to_position(id, pos)
-# while felix.get_servo_current_position(id)>(pos+10) or felix.get_servo_current_position(id)<(pos-10):
-#     time.sleep(0.1)
-#
-# id=2
-# pos=75000
-# felix.move_servo_to_position(id, pos)
-# while felix.get_servo_current_position(id)>(pos+10) or felix.get_servo_current_position(id)<(pos-10):
-#     time.sleep(0.1)
-#
-# id=3
-# pos=75000
-# felix.move_servo_to_position(id, pos)
-# while felix.get_servo_current_position(id)>(pos+10) or felix.get_servo_current_position(id)<(pos-10):
-#     time.sleep(0.1)
-
-
 trajectory=[[-30000,50000,45000,25000],
             [-15000,45000,50000,45000],
             [0,     0,    45000,45000],
@@ -65,26 +42,24 @@ trajectory=[[-30000,50000,45000,25000],
             [0,     0,    75000, 45000]]
 
 input("Will run trajectory!")
+os.system("cls")
+print("running trajectory!")
+print("press 'e' to end")
 offset=100
 speed=3000
 felix.set_speed([speed,speed,speed,speed])
 i=0
 while True:
     felix.move_to_pos(trajectory[i])
-    os.system("cls")
-    print("running trajectory!!")
-    test=felix.test_position(trajectory[i], offset)
-    while test==False:
+    while felix.test_position(trajectory[i], offset) is False:
         time.sleep(0.1)
-        test = felix.test_position(trajectory[i], offset)
-
-
     i += 1
     if i > 5:
         i = 0
+    if msvcrt.kbhit() !=0:
+        if msvcrt.getwch()=="e":
+            break
 
-    # if msvcrt.getch().decode()=="e":
-    #     break
 
 input("Will diable torque!")
 felix.disable_torque()
