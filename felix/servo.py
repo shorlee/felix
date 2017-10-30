@@ -12,6 +12,7 @@
 # ------------------------------------------------
 
 import os
+import math
 
 import dynamixel_functions as dynamixel
 
@@ -52,6 +53,7 @@ class servo:
 
     # For Dynamixel H42-20-S300-R
     ticks_per_turn = 303750
+    ticks_per_half_turn= ticks_per_turn/2
 
     # Set True to get debug-info
     debug = True
@@ -99,7 +101,7 @@ class servo:
                     input("Press any key to terminate...")
                     quit()
 
-    # ?
+    # Close communication with USB-to-Dynamixel
     def close_port(self):
         dynamixel.closePort(servo.port_num)
 
@@ -173,3 +175,13 @@ class servo:
                     print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
         elif servo.debug:
             print("Velocity of Servo ", self.ID, " out of range")
+
+    # Convert ticks into degrees
+    def tick_to_deg(self,tick):
+        deg=tick*(180/(self.ticks_per_turn/2))
+        return deg
+
+    # Convert degrees into ticks
+    def deg_to_tick(self,deg):
+        tick=int(float(deg)*(151875/180))
+        return tick

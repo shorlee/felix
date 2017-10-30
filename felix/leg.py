@@ -18,6 +18,8 @@
 
 
 import os
+import time
+
 import servo
 # try:
 #     import servo
@@ -32,7 +34,8 @@ class leg:
     # Public class attributes
     # =======================================
 
-    # none...
+
+    sampling=4    # seconds to wait for queries
 
     # =======================================
     # Private methods
@@ -63,28 +66,25 @@ class leg:
         for i in self.servos:
             i.disable_torque()
 
-    # Moves all motors to its target positions
+    # Moves all motors to its target positions given in ticks
     def move_to_pos(self, pos):
-        # ToGo
-        # current_position=self.get_current_position()
-        # path=list()
-        # #legth of path
-        # for i in range(self.num_servo):
-        #     path.append(abs(current_position[i]-pos[i]))
-        # #find longest path
-        # index_longest_path=-1
-        # longest_path=0
-        # for j in range(self.num_servo):
-        #     if path[j]>longest_path:
-        #         longest_path=path[j]
-        #         index_longest_path=j
-        # speed=[1]*self.num_servo
-        for l in range(self.num_servo):
-            self.servos[l].write_position(pos[l])
+        for i in range(self.num_servo):
+            self.servos[i].write_position(pos[i])
 
-    # Moves only one motor to its target positions
+    # Moves all motors to its target positions given in degrees
+    def move_to_deg(self, deg):
+        pos=list()
+        for i in range(len(deg)):
+            pos.append(self.servos[i].deg_to_tick(deg[i]))
+        leg.move_to_pos(self,pos)
+
+    # Moves only one motor to its target positions in ticks
     def move_servo_to_position(self, servoID, pos):
         self.servos[servoID].write_position(pos)
+
+    # Moves only one motor to its target positions in degrees
+    def move_servo_to_degrees(self, servoID, deg):
+        self.servos[servoID].write_position(int(self.servos[servoID].deg_to_tick(deg)))
 
     # Sets desired velocity of movement for all motors
     def set_speed(self, speed):
@@ -98,10 +98,22 @@ class leg:
             position.append(i.read_present_position())
         return position
 
+    # Get present position only for one servo in ticks
     def get_servo_current_position(self, servoID):
         return self.servos[servoID].read_present_position()
 
+    # Get present position only for one servo in degree
+    def get_servo_current_degree(self, servoID):
+        return self.servos[servoID].tick_to_deg(self.servos[servoID].read_present_position())
 
+    # Convert derees into ticks
+    def degrees_to_ticks(self,deg):
+        ticks=list()
+        for i in range(len(deg)):
+            ticks.append(self.servos[i].deg_to_tick(deg[i]))
+        return ticks
+
+    # Test is present position in ticks is in range pos +- offset for all servos
     def test_position(self,pos,offset):
         current_pos=self.get_current_position()
         for i in range(len(pos)):
@@ -110,6 +122,20 @@ class leg:
             else:
                 return True
 
+    # Test is present position in degrees is in range deg +- offset for all servos
+    def test_degrees(self,deg,offset):
+        pos=list()
+        offset_deg=self.servos[0].deg_to_tick(offset)
+        for i in range(len(deg)):
+            pos.append(self.servos[i].deg_to_tick(deg[i]))
+        print("pos: ",pos)
+        print("offset: ",offset_deg)
+        while leg.test_position(self,pos,offset_deg) is False:
+            time.sleep(self.sampling)
+        return True
+
+    # Close communication with servos
     def end_communication(self):
         self.servos[0].close_port
         return
+
