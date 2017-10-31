@@ -5,11 +5,10 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Marcel Bernauer, Michel Asmus, Phil Petschull
+# Michel Asmus, Marcel Bernauer, Phil Petschull
 # ------------------------------------------------
 # project: felix
-# leg-class by michel
-# edited: 2017-10-19 16:00 (marcel)
+# leg-class
 # ------------------------------------------------
 
 
