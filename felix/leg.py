@@ -28,6 +28,7 @@ class leg:
     # Public class attributes
     # =======================================
 
+    active_torque = False
 
     sampling=4    # seconds to wait for queries
 
@@ -52,11 +53,13 @@ class leg:
 
     # Activates power consumption for halting position on all motors
     def enable_torque(self):
+        leg.active_torque = True
         for i in self.servos:
             i.enable_torque()
 
     # Deactivates power consumption for manual operation on all motors
     def disable_torque(self):
+        leg.active_torque = False
         for i in self.servos:
             i.disable_torque()
 
