@@ -17,11 +17,9 @@ except Exception as e:
     print("Error: Importing leg failed!")
     print(e)
 
-from dict_servo import servo_all
+from dict_servo import servo_all    # servo constants
+import serial.tools.list_ports      # available COM-ports
 
-import serial.tools.list_ports
-
-DEVICENAME = "COM4".encode('utf-8')
 
 # get a list of available COM-ports on a win-system
 def get_comports():
@@ -29,63 +27,74 @@ def get_comports():
 
 # interactive choice of COM-port
 def set_comport():
-    print("Determining COM-Ports...")
-    ports = list(get_comports())
+    while True:
+        print("Determining COM-Ports...")
+        ports = list(get_comports())
+    
+        if not len(ports):
+            print("Found 0 COM-Ports :(\n")
+            if len(input("Enter anything to exit or hit enter to try again...")):
+                return False
 
-    if len(ports) == 1:
-        print("Found 1 COM-Port:", ports[0])
-        device = str(ports[0]).split()[0]
+        elif len(ports) == 1:
+            print("Found 1 COM-Port:", ports[0])
+            return str(ports[0]).split()[0]
 
-    elif len(ports) == 0:
-        print("Found 0 COM-Ports :(")
-        device = -1
+        else:
+            print("Found ", len(ports), " COM-Ports.")
+            for index, port in enumerate(ports):
+                print(index, port)
+            return str(ports[int(input("Please choose by typing in the desired index of the port:"))]).split()[0]
 
-    else:
-        print("Found ", len(ports), " COM-Ports.")
-        for index, port in enumerate(ports):
-            print(index, port)
-        device = str(ports[int(input("Please choose by typing in the desired index of the port:"))]).split()[0]
-
-    print("Have fun with", device, "!")
-    return device
 
 
 # options
-def menu():
+def menu(felix):
+
+    print("\nWelcome to FELIX - Feedback Error Learning with dynamIXel!")
 
     while True:
-
+        print("\n--------------------------------------------")
         print("Options:")
         print("0: Exit programm")
-        print("1: Set your COM-port")
-        print("2: Wake up FELIX")
-        print("3: Toggle torque-activation")
-        print("4: Read present position in degrees")
-        print("5: Move to default position")
-        print("6: Execute dummy trajectory given in test_felix.py")
-        print("7: Move one servo to position given in degrees")
-        print("8: Move all servos to destination given in degrees")
-        choice = int(input("Please choose: "))
-        print("Your choice is ", choice)
-
-        if choice == 0:
-            print("Exiting...")
+        print("1: Toggle torque-activation")
+        print("2: Read present position in degrees")
+        print("3: Move to default position")
+        print("4: Execute dummy trajectory given in test_felix.py")
+        print("5: Move one servo to position given in degrees")
+        print("6: Move all servos to destination given in degrees")
+        print("--------------------------------------------")
+        
+        choice = ""
+        while True:
             try:
-                felix.end_communication()
+                choice = int(input("Please choose: "))
                 break
             except:
-                break
+                choice = ""
 
+        print("Your choice is", choice)
+
+        # exit
+        if choice == 0:
+            print("Exiting...")
+            break
+
+        # toggle torque
         elif choice == 1:
-            print("")
-            DEVICENAME = str(set_comport()).encode('utf-8')
-            
+            #if not felix.active_torque:
+            #    felix.enable_torque()
+            #    print("Torque is now enabled.")
+            #else:
+            #    felix.disable_torque()
+            #    print("Torque is now disabled.")
+            pass
+
+        # read position in degrees
         elif choice == 2:
-            felix = leg(servo_all, DEVICENAME)
+            pass
 
         elif choice == 3:
-            #felix.enable_torque()
-            #
             pass
 
         elif choice == 4:
@@ -97,14 +106,8 @@ def menu():
         elif choice == 6:
             pass
 
-        elif choice == 7:
-            pass
-
-        elif choice == 8:
-            pass
-
         else:
-            print("Unknown input. Please try again.")
+            print("Option is not available. Please try again.")
 
 
 
@@ -112,8 +115,26 @@ def menu():
 # main
 def main():
 
-    menu()
+    print("Starting FELIX...")
+
+    # determine COM-port...
+    DEVICENAME = set_comport()
+    if DEVICENAME:
+        print("Working with", DEVICENAME)
+        DEVICENAME = str(DEVICENAME).encode('utf-8')
+    else:
+        print("Aborted port-detection. Exiting...")
+        return
+
+    # Wake up...
+    felix = leg(servo_all, DEVICENAME)
+
+    # UI
+    menu(felix)
     
+    # go to sleep
+    felix.end_communication()
+
     return
     
 
