@@ -11,21 +11,16 @@
 # leg-class by michel
 # edited: 2017-10-19 16:00 (marcel)
 # ------------------------------------------------
-# TODO:
-# a) from servo import servo
-# b) for servo in self.servos
-# c) debug at import
 
 
 import os
 import time
 
-import servo
-# try:
-#     import servo
-# except Exception as e:
-#     print("Error: Importing servo failed!")
-#     print(e)
+try:
+    from servo import servo
+except Exception as e:
+    print("Error: Importing servo failed!")
+    print(e)
 
 
 class leg:
@@ -47,9 +42,9 @@ class leg:
         self.num_servo = 0
         for i in servo_dict:
             self.num_servo += 1
-            self.servos.append(servo.servo(i["ID"], i["BAUDRATE"],
-                                           i["POSITION_MINIMUM"], i["POSITION_MAXIMUM"],
-                                           i["SPEED_MAXIMUM"], i["CLOCKWISE"], DEVICENAME))
+            self.servos.append(servo(i["ID"], i["BAUDRATE"],
+                                     i["POSITION_MINIMUM"], i["POSITION_MAXIMUM"],
+                                     i["SPEED_MAXIMUM"], i["CLOCKWISE"], DEVICENAME))
         self.servos[0].initialize_port()
 
     # =======================================

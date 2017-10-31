@@ -14,13 +14,11 @@
 import os
 import math
 
-import dynamixel_functions as dynamixel
-
-# try:
-#     import dynamixel_functions as dynamixel
-# except Exception as e:
-#     print("Error: Importing dynamixel_functions failed!")
-#     print(e)
+try:
+    import dynamixel_functions as dynamixel
+except Exception as e:
+    print("Error: Importing dynamixel_functions failed!")
+    print(e)
 
 
 class servo:
@@ -81,9 +79,11 @@ class servo:
 
     # Establishes a connection to the motor and transmits motor-specific settings
     def initialize_port(self):
+
         servo.port_num = dynamixel.portHandler(self.DEVICENAME)
         dynamixel.packetHandler()
         success_open_port = dynamixel.openPort(servo.port_num)
+
         if servo.debug:
             if success_open_port:
                 print("Succeeded to open the port!")
@@ -91,15 +91,17 @@ class servo:
                 print("Failed to open the port!")
                 input("Press any key to terminate...")
                 quit()
+
         if success_open_port:
             success_set_baudrate = dynamixel.setBaudRate(servo.port_num, self.BAUDRATE)
-            if self.debug:
+            if servo.debug:
                 if success_set_baudrate:
                     print("Succeeded to change the baudrate!")
                 else:
                     print("Failed to change the baudrate!")
                     input("Press any key to terminate...")
                     quit()
+
 
     # Close communication with USB-to-Dynamixel
     def close_port(self):
@@ -177,11 +179,11 @@ class servo:
             print("Velocity of Servo ", self.ID, " out of range")
 
     # Convert ticks into degrees
-    def tick_to_deg(self,tick):
-        deg=tick*(180/(self.ticks_per_turn/2))
+    def tick_to_deg(self, tick):
+        deg = tick*(180/(self.ticks_per_turn/2))
         return deg
 
     # Convert degrees into ticks
-    def deg_to_tick(self,deg):
-        tick=int(float(deg)*(151875/180))
+    def deg_to_tick(self, deg):
+        tick = int(float(deg)*(151875/180))
         return tick
