@@ -28,9 +28,9 @@ class leg:
     # Public class attributes
     # =======================================
 
-    active_torque = False
+    torque = False
 
-    sampling=4    # seconds to wait for queries
+    sampling = 4    # seconds to wait for queries
 
     # =======================================
     # Private methods
@@ -53,13 +53,13 @@ class leg:
 
     # Activates power consumption for halting position on all motors
     def enable_torque(self):
-        leg.active_torque = True
+        leg.torque = True
         for i in self.servos:
             i.enable_torque()
 
     # Deactivates power consumption for manual operation on all motors
     def disable_torque(self):
-        leg.active_torque = False
+        leg.torque = False
         for i in self.servos:
             i.disable_torque()
 
@@ -103,7 +103,7 @@ class leg:
     def get_servo_current_degree(self, servoID):
         return self.servos[servoID].tick_to_deg(self.servos[servoID].read_present_position())
 
-    # Convert derees into ticks
+    # Convert degrees into ticks
     def degrees_to_ticks(self,deg):
         ticks=list()
         for i in range(len(deg)):
@@ -135,4 +135,3 @@ class leg:
     def end_communication(self):
         self.servos[0].close_port
         return
-
