@@ -21,95 +21,149 @@ from dict_servo import servo_all    # servo constants
 import serial.tools.list_ports      # available COM-ports
 
 
-# get a list of available COM-ports on a win-system
-def get_comports():
-    return serial.tools.list_ports.comports()
+class robot():
 
-# interactive choice of COM-port
-def set_comport():
-    while True:
-        print("Determining COM-Ports...")
-        ports = list(get_comports())
+    # =======================================
+    # Public class attributes
+    # =======================================
     
-        if not len(ports):
-            print("Found 0 COM-Ports :(\n")
-            if len(input("Enter anything to exit or hit enter to try again...")):
-                return False
+    # =======================================
+    # Private methods
+    # =======================================
 
-        elif len(ports) == 1:
-            print("Found 1 COM-Port:", ports[0])
-            return str(ports[0]).split()[0]
+    # Constructor
+    def __init__(self):
+        print("constructing...")
 
+        # determine COM-port...
+        DEVICENAME = self.set_comport()
+        if DEVICENAME:
+            print("Working with", DEVICENAME)
+            DEVICENAME = str(DEVICENAME).encode('utf-8')
         else:
-            print("Found ", len(ports), " COM-Ports.")
-            for index, port in enumerate(ports):
-                print(index, port)
-            return str(ports[int(input("Please choose by typing in the desired index of the port:"))]).split()[0]
+            print("Aborted port-detection. Exiting...")
+            return
+
+        # Wake up...
+        self.leg = leg(servo_all, DEVICENAME)
 
 
+    # Destructor
+    def __del__(self):
 
-# options
-def menu(felix):
+        # safely turn off torque if necessary
+        if self.leg.torque:
+            input("Please watch out, hit enter to disable torque...")
+            self.leg.disable_torque()
 
-    print("\nWelcome to FELIX - Feedback Error Learning with dynamIXel!")
+        print("destructing...")
 
-    while True:
-        print("\n--------------------------------------------")
-        print("Options:")
-        print("0: Exit programm")
-        print("1: Toggle torque-activation")
-        print("2: Read present position in degrees")
-        print("3: Move to default position")
-        print("4: Execute dummy trajectory given in test_felix.py")
-        print("5: Move one servo to position given in degrees")
-        print("6: Move all servos to destination given in degrees")
-        print("--------------------------------------------")
-        
-        choice = ""
+        # safe exit
+        self.leg.end_communication()
+
+
+    # give away the leg
+    def get_leg(self):
+        return self.leg
+
+
+    # get a list of available COM-ports on a win-system
+    def get_comports(self):
+        return serial.tools.list_ports.comports()
+
+
+    # interactive choice of COM-port
+    def set_comport(self):
         while True:
-            try:
-                choice = int(input("Please choose: "))
-                break
-            except:
-                choice = ""
+            print("Determining COM-Ports...")
+            ports = list(self.get_comports())   # element is like: "COM # - USB Serial Port (COM#)"
+    
+            if not len(ports):
+                print("Found 0 COM-Ports :(\n")
+                if len(input("Enter anything to exit or hit enter to look for again...")):
+                    return False
 
-        print("Your choice is", choice)
+            elif len(ports) == 1:
+                print("Found 1 COM-Port:", ports[0])    # take the only one
+                return str(ports[0]).split()[0]
 
-        # exit
-        if choice == 0:
-            print("Exiting...")
-            break
+            else:
+                print("Found ", len(ports), " COM-Ports.")  # choose it by typing in the index of the port shown
+                for index, port in enumerate(ports):
+                    print(index, port)
+                return str(ports[int(input("Please choose by typing in the desired index of the port:"))]).split()[0]
 
-        # toggle torque
-        elif choice == 1:
-            #if not felix.active_torque:
-            #    felix.enable_torque()
-            #    print("Torque is now enabled.")
-            #else:
-            #    felix.disable_torque()
-            #    print("Torque is now disabled.")
-            pass
 
-        # read position in degrees
-        elif choice == 2:
-            pass
-
-        elif choice == 3:
-            pass
-
-        elif choice == 4:
-            pass
-
-        elif choice == 5:
-            pass
-
-        elif choice == 6:
-            pass
-
+    # automatically enable/disable torque
+    def toggle_torque(self):
+        if not self.leg.torque:
+            self.leg.enable_torque()
+            print("Torque enabled.")
         else:
-            print("Option is not available. Please try again.")
+            self.leg.disable_torque()
+            print("Torque disabled.")
 
 
+    # =======================================
+    # Public methods
+    # =======================================
+
+    # options
+    def menu(self):
+
+        print("\nWelcome to FELIX - Feedback Error Learning with dynamIXel!")
+
+        options = {
+            'e' : "[e]xit programm",
+            't' : "[t]oggle torque-activation",
+            's' : "set movement [s]peed",
+            'r' : "[r]ead present position in degrees",
+            'd' : "move to [d]efault position",
+            'x' : "e[x]ecute dummy trajectory given in test_felix.py",
+            'o' : "move [o]ne servo to position given in degrees",
+            'a' : "move [a]ll servos to destination given in degrees"
+            }
+
+        while True:
+            print("\n--------------------------------------------")
+            print("Your Options:")
+            for option in options.values():
+                print(option)
+            print("--------------------------------------------")
+
+            choice = input("Please choose: ")   # user input
+
+
+            # input processing
+            if choice == 'e':
+                break
+
+            elif choice == 't':
+                self.toggle_torque()
+
+            elif choice == 's':
+                pass
+                #self.leg.set_speed(list(input("Please input speed (default: 1000):")))
+
+            elif choice == 'r':
+                for servo_id, servo_pos in enumerate(self.leg.get_current_position()):
+                    print("> servo", servo_id, "is at", servo_pos, "degrees.")
+
+            elif choice == 'd':
+                self.leg.move_to_deg([0, 0, 90, 90])
+
+            elif choice == 'x':
+                pass
+
+            elif choice == 'o':
+                self.leg.move_servo_to_degrees(int(input("Please input servo-id:")), float(input("Please input position:")))
+
+            elif choice == 'a':
+                pass
+                #self.leg.move_to_deg([int(x) for x in input("Please input position (default: 0 0 90 90):").split()])
+
+            else:
+                print("Invalid input... Please try again")
 
 
 # main
@@ -117,25 +171,12 @@ def main():
 
     print("Starting FELIX...")
 
-    # determine COM-port...
-    DEVICENAME = set_comport()
-    if DEVICENAME:
-        print("Working with", DEVICENAME)
-        DEVICENAME = str(DEVICENAME).encode('utf-8')
-    else:
-        print("Aborted port-detection. Exiting...")
-        return
-
     # Wake up...
-    felix = leg(servo_all, DEVICENAME)
+    felix = robot()
 
     # UI
-    menu(felix)
-    
-    # go to sleep
-    felix.end_communication()
+    felix.menu()
 
-    return
     
 
 # jump to main
