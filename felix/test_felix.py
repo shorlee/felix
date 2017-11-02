@@ -5,35 +5,37 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Marcel Bernauer, Michel Asmus, Phil Petschull
+# Michel Asmus, Marcel Bernauer, Phil Petschull
 # ------------------------------------------------
 # project: felix
-# main
-# edited: 2017-10-27 16:00 (michel)
+# test
 # ------------------------------------------------
 
 import os
 import msvcrt
 import time
 
-from leg import leg
-from dict_servo import servo_all
+from felix import robot
 
-DEVICENAME = "COM3".encode('utf-8')
+# Wake up...
+felix = robot()
 
-felix = leg(servo_all, DEVICENAME)
-felix.enable_torque()
+#DEVICENAME = "COM3".encode('utf-8')   # needless: constructor cares of you!
+
+
+#felix.enable_torque()  # now toggeable!
+felix.toggle_torque()
 
 speed = 1000
-felix.set_speed([speed, speed, speed, speed])
+felix.get_leg().set_speed([speed, speed, speed, speed]) # check out the new .get_leg() at first!
 input("will move to default position")
 
 pos = [0, 0, 90, 90]
 offset = 0.5
 for id in range(len(pos)):
     print("will move servo ", id, " to default position")
-    felix.move_servo_to_degrees(id, pos[id])
-    while felix.get_servo_current_degree(id) > (pos[id] + offset) or felix.get_servo_current_degree(id) < (
+    felix.get_leg().move_servo_to_degrees(id, pos[id])
+    while felix.get_leg().get_servo_current_degree(id) > (pos[id] + offset) or felix.get_leg().get_servo_current_degree(id) < (
         pos[id] - offset):
         time.sleep(0.1)
 
@@ -57,11 +59,11 @@ print("running trajectory!")
 print("press 'e' to end")
 offset = 0.1
 speed = 1000
-felix.set_speed([speed, speed, speed, speed])
+felix.get_leg().set_speed([speed, speed, speed, speed])
 i = 0
 while True:
-    felix.move_to_deg(trajectory_degrees[i])
-    test = felix.test_degrees(trajectory_degrees[i], offset)
+    felix.get_leg().move_to_deg(trajectory_degrees[i])
+    test = felix.get_leg().test_degrees(trajectory_degrees[i], offset)
     print("move to point ", i, "with degrees :", trajectory_degrees[i])
 
     i += 1
@@ -70,7 +72,10 @@ while True:
         if msvcrt.getwch() == "e":
             break
 
-disable = input("disable torque? (y)")
-if disable == "y":
-    felix.disable_torque()
-felix.end_communication()
+# following is needless, destructor does this safely!
+
+#disable = input("disable torque? (y)")
+#if disable == "y":
+#    felix.get_leg().disable_torque()
+
+#felix.get_leg().end_communication()
