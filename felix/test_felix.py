@@ -13,38 +13,26 @@
 
 import os
 import msvcrt
-import time
 
 from felix import robot
 
 # Wake up...
 felix = robot()
 
-#DEVICENAME = "COM3".encode('utf-8')   # needless: constructor cares of you!
-
-
 #felix.enable_torque()  # now toggeable!
 felix.toggle_torque()
 
 speed = 1000
-felix.get_leg().set_speed([speed, speed, speed, speed]) # check out the new .get_leg() at first!
+felix.get_leg().set_speed_for_all(speed) # check out the new .get_leg() at first!
 input("will move to default position")
 
 pos = [0, 0, 90, 90]
-offset = 0.5
+offset = 0.005
 for id in range(len(pos)):
     print("will move servo ", id, " to default position")
     felix.get_leg().move_servo_to_degrees(id, pos[id])
-    while felix.get_leg().get_servo_current_degree(id) > (pos[id] + offset) or felix.get_leg().get_servo_current_degree(id) < (
-        pos[id] - offset):
-        time.sleep(0.1)
-
-# trajectory_ticks=   [[-30000,50000,45000,25000],
-#                     [-15000,45000,50000,45000],
-#                     [0,     0,    45000,45000],
-#                     [15000,-45000,50000,45000],
-#                     [30000,-50000,45000,25000],
-#                     [0,     0,    75000, 45000]]
+    felix.get_leg().test_servo_degree(id,pos[id],offset)
+    #felix.get_leg().test_degrees(pos, offset)
 
 trajectory_degrees = [[-35, 60, 55, 30],
                       [-18, 55, 60, 55],
@@ -57,9 +45,9 @@ input("will run trajectory!")
 os.system("cls")
 print("running trajectory!")
 print("press 'e' to end")
-offset = 0.1
+offset = 0.01
 speed = 1000
-felix.get_leg().set_speed([speed, speed, speed, speed])
+felix.get_leg().set_speed_for_all(speed)
 i = 0
 while True:
     felix.get_leg().move_to_deg(trajectory_degrees[i])
@@ -71,11 +59,3 @@ while True:
     if msvcrt.kbhit() != 0:
         if msvcrt.getwch() == "e":
             break
-
-# following is needless, destructor does this safely!
-
-#disable = input("disable torque? (y)")
-#if disable == "y":
-#    felix.get_leg().disable_torque()
-
-#felix.get_leg().end_communication()
