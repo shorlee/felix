@@ -61,12 +61,11 @@ class servo:
     # =======================================
 
     # Constructor saves motor-specific settings
-    def __init__(self, DXL_ID, BAUDRATE, POS_MIN, POS_MAX, SPEED_MAX, CLOCKWISE, DEVICENAME):
+    def __init__(self, DXL_ID, BAUDRATE, POS_MIN, POS_MAX, CLOCKWISE, DEVICENAME):
         self.ID = DXL_ID
         self.BAUDRATE = BAUDRATE
         self.POS_MIN = POS_MIN
         self.POS_MAX = POS_MAX
-        self.SPEED_MAX = SPEED_MAX
         self.CLOCKWISE = CLOCKWISE
         self.DEVICENAME = DEVICENAME
 
@@ -165,18 +164,15 @@ class servo:
 
     # Sets desired velocity of movement
     def write_velocity(self, dxl_goal_velocity):
-        if dxl_goal_velocity <= self.SPEED_MAX:
-            dynamixel.write4ByteTxRx(servo.port_num, servo.PROTOCOL_VERSION, self.ID, servo.ADDR_PRO_GOAL_VELOCITY,
-                                     dxl_goal_velocity)
-            dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
-            dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-            if servo.debug:
-                if dxl_comm_result != servo.COMM_SUCCESS:
-                    print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-                elif dxl_error != 0:
-                    print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
-        elif servo.debug:
-            print("Velocity of Servo ", self.ID, " out of range")
+        dynamixel.write4ByteTxRx(servo.port_num, servo.PROTOCOL_VERSION, self.ID, servo.ADDR_PRO_GOAL_VELOCITY,
+                                 dxl_goal_velocity)
+        dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
+        dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
+        if servo.debug:
+            if dxl_comm_result != servo.COMM_SUCCESS:
+                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+            elif dxl_error != 0:
+                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
 
     # Convert ticks into degrees
     def tick_to_deg(self, tick):

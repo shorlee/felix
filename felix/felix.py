@@ -17,7 +17,7 @@ except Exception as e:
     print("Error: Importing leg failed!")
     print(e)
 
-from dict_servo import servo_all    # servo constants
+from dict_servo import servo_data   # servo constants
 import serial.tools.list_ports      # available COM-ports
 
 
@@ -45,7 +45,7 @@ class robot():
             return
 
         # Wake up...
-        self.leg = leg(servo_all, DEVICENAME)
+        self.leg = leg(servo_data, DEVICENAME)
 
 
     # Destructor

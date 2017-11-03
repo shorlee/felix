@@ -30,7 +30,10 @@ class leg:
 
     torque = False
 
-    sampling = 4    # seconds to wait for queries
+    # Set True to get debug-info
+    debug=False
+
+    sampling = 0.1    # seconds to wait for queries
 
     # =======================================
     # Private methods
@@ -44,7 +47,7 @@ class leg:
             self.num_servo += 1
             self.servos.append(servo(i["ID"], i["BAUDRATE"],
                                      i["POSITION_MINIMUM"], i["POSITION_MAXIMUM"],
-                                     i["SPEED_MAXIMUM"], i["CLOCKWISE"], DEVICENAME))
+                                     i["CLOCKWISE"], DEVICENAME))
         self.servos[0].initialize_port()
 
     # =======================================
@@ -83,10 +86,15 @@ class leg:
     def move_servo_to_degrees(self, servoID, deg):
         self.servos[servoID].write_position(int(self.servos[servoID].deg_to_tick(deg)))
 
-    # Sets desired velocity of movement for all motors
-    def set_speed(self, speed):
+    # Sets desired velocity of movement for all motors with individual value
+    def set_speed_for_each(self, speed):
         for i in range(len(self.servos)):
             self.servos[i].write_velocity(speed[i])
+
+    # Sets desired velocity of movement for all motors with same value
+    def set_speed_for_all(self,speed):
+        for i in range(len(self.servos)):
+            self.servos[i].write_velocity(speed)
 
     # Gets a list of present positions from all motors
     def get_current_position(self):
@@ -115,9 +123,12 @@ class leg:
         current_pos=self.get_current_position()
         for i in range(len(pos)):
             if  (pos[i]>(current_pos[i]+offset) or pos[i]<(current_pos[i]-offset)):
+                #if self.debug: print("position not reached!")
                 return False
             else:
+                if self.debug: print("position reached!")
                 return True
+
 
     # Test is present position in degrees is in range deg +- offset for all servos
     def test_degrees(self,deg,offset):
@@ -125,11 +136,18 @@ class leg:
         offset_deg=self.servos[0].deg_to_tick(offset)
         for i in range(len(deg)):
             pos.append(self.servos[i].deg_to_tick(deg[i]))
-        print("pos: ",pos)
-        print("offset: ",offset_deg)
         while leg.test_position(self,pos,offset_deg) is False:
             time.sleep(self.sampling)
         return True
+
+    def test_servo_degree(self,servoID,deg,offset):
+        while True:
+            pos=self.get_servo_current_degree(servoID)
+            if deg-offset<pos < deg+offset:
+                return
+
+
+
 
     # Close communication with servos
     def end_communication(self):
