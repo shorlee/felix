@@ -28,10 +28,11 @@ class leg:
     # Public class attributes
     # =======================================
 
+    # trace activation of torque
     torque = False
 
     # Set True to get debug-info
-    debug=False
+    debug = False
 
     sampling = 0.1    # seconds to wait for queries
 
@@ -40,19 +41,34 @@ class leg:
     # =======================================
 
     # Constructor intializes its motors
-    def __init__(self, servo_dict, DEVICENAME):
+    def __init__(self, data, DEVICENAME):
+
+        # save reference to dictionary
+        self.leg_data = data
+
+        # build servo objects
         self.servos = list()
         self.num_servo = 0
-        for i in servo_dict:
+        for servo_dict in self.leg_data["servos"]:
             self.num_servo += 1
-            self.servos.append(servo(i["ID"], i["BAUDRATE"],
-                                     i["POSITION_MINIMUM"], i["POSITION_MAXIMUM"],
-                                     i["CLOCKWISE"], DEVICENAME))
-        self.servos[0].initialize_port()
+            self.servos.append(servo(servo_dict["ID"], servo_dict["BAUDRATE"],
+                                     servo_dict["POSITION_MINIMUM"], servo_dict["POSITION_MAXIMUM"],
+                                     servo_dict["CLOCKWISE"], DEVICENAME))
+        self.servos[0].initialize_port()    # do port intialization just once because of daisy chain
 
     # =======================================
     # Public methods
     # =======================================
+
+    # (analytical) forward kinematics with angles given in radians (!)
+    def forwardkin_alpha2end(self, alpha, beta, gamma, delta):
+        d0 = self.leg_data["d0"], a2 = self.leg_data["a2"], a3 = self.leg_data["a3"]
+        pos = [0, 0, 0, 1]
+        pos[0] = ( a3 * np.cos(delta) * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.cos(alpha) * np.cos(beta) * np.sin(gamma) + np.sin(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) )
+        pos[1] = ( a3 * np.cos(delta) * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.sin(alpha) * np.cos(beta) * np.sin(gamma) - np.cos(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) )
+        pos[2] = ( a3 * np.sin(beta) * np.cos(gamma) * np.cos(delta) ) - ( a3 * np.sin(beta) * np.sin(gamma) * np.sin(delta) ) + ( a2 * np.sin(beta) * np.cos(gamma) ) + d0
+        return pos
+
 
     # Activates power consumption for halting position on all motors
     def enable_torque(self):

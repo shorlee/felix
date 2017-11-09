@@ -17,7 +17,7 @@ except Exception as e:
     print("Error: Importing leg failed!")
     print(e)
 
-from dict_servo import servo_data   # servo constants
+from data import robot_data         # servo constants
 import serial.tools.list_ports      # available COM-ports
 
 
@@ -45,7 +45,7 @@ class robot():
             return
 
         # Wake up...
-        self.leg = leg(servo_data, DEVICENAME)
+        self.leg = leg(robot_data[0]["legs"][0], DEVICENAME)    # here just robot 0 and its leg 0
 
 
     # Destructor
@@ -115,6 +115,7 @@ class robot():
 
         options = {
             'e' : "[e]xit programm",
+            'i' : "[i]nformation about the robot (data.py)",
             't' : "[t]oggle torque-activation",
             's' : "set movement [s]peed",
             'r' : "[r]ead present position in degrees",
@@ -138,12 +139,16 @@ class robot():
             if choice == 'e':
                 break
 
+            elif choice == 'i':
+                for key, value in self.leg.leg_data.items():
+                    print(key, " = ", value)
+
             elif choice == 't':
                 self.toggle_torque()
 
             elif choice == 's':
                 pass
-                #self.leg.set_speed(list(input("Please input speed (default: 1000):")))
+                #self.leg.set_speed(input("Please input speed (default: 1000):"))
 
             elif choice == 'r':
                 for servo_id, servo_pos in enumerate(self.leg.get_current_position()):
