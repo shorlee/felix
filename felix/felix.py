@@ -17,6 +17,12 @@ except Exception as e:
     print("Error: Importing leg failed!")
     print(e)
 
+try:
+    from test_felix import run_trajectory
+except Exception as e:
+    print("Error: Importing run_trajectory failed!")
+    print(e)
+
 from data import robot_data         # servo constants
 import serial.tools.list_ports      # available COM-ports
 
@@ -117,7 +123,7 @@ class robot():
             'e' : "[e]xit programm",
             'i' : "[i]nformation about the robot (data.py)",
             't' : "[t]oggle torque-activation",
-            's' : "set movement [s]peed",
+            's' : "set movement [s]peed for all servos",
             'r' : "[r]ead present position in degrees",
             'd' : "move to [d]efault position",
             'x' : "e[x]ecute dummy trajectory given in test_felix.py",
@@ -147,24 +153,40 @@ class robot():
                 self.toggle_torque()
 
             elif choice == 's':
+                self.leg.set_speed_for_all(int(input("Please input speed:")))
                 pass
                 #self.leg.set_speed(input("Please input speed (default: 1000):"))
 
             elif choice == 'r':
-                for servo_id, servo_pos in enumerate(self.leg.get_current_position()):
-                    print("> servo", servo_id, "is at", servo_pos, "degrees.")
+                for servo_id, servo_pos in enumerate(self.leg.get_current_degrees()):
+                    print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
 
             elif choice == 'd':
-                self.leg.move_to_deg([0, 0, 90, 90])
+                if self.leg.torque:
+                    offset = 0.005
+                    pos = [0, 0, 90, 90]
+                    for id, pos in enumerate(pos):
+                        print("will move servo", id, "to default position")
+                        self.leg.move_servo_to_degrees(id, pos)
+                        self.leg.test_servo_degree(id, pos, offset)
+                else: print("Please enable torque first!")
 
             elif choice == 'x':
-                pass
+                if self.leg.torque:
+                    run_trajectory(self.leg)
+                else:
+                    print("Please enable torque first!")
 
             elif choice == 'o':
                 self.leg.move_servo_to_degrees(int(input("Please input servo-id:")), float(input("Please input position:")))
 
             elif choice == 'a':
-                pass
+                if self.leg.torque:
+                    pos=list()
+                    for i in range(self.leg.num_servo):
+                        pos.append(input("Please input position for servo {}: ".format(i)))
+                    self.leg.move_to_deg(pos)
+                else: print("Please enable torque first!")
                 #self.leg.move_to_deg([int(x) for x in input("Please input position (default: 0 0 90 90):").split()])
 
             else:

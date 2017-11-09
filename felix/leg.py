@@ -119,6 +119,13 @@ class leg:
             position.append(i.read_present_position())
         return position
 
+    def get_current_degrees(self):
+        pos_tick=self.get_current_position()
+        pos_deg=list()
+        for id,pos in enumerate (pos_tick):
+            pos_deg.append(self.servos[id].tick_to_deg(pos))
+        return pos_deg
+
     # Get present position only for one servo in ticks
     def get_servo_current_position(self, servoID):
         return self.servos[servoID].read_present_position()
