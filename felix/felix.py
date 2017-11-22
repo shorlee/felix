@@ -73,12 +73,12 @@ class robot():
         return self.leg
 
 
-    # get a list of available COM-ports on a win-system
+    # get a list of available COM-ports on a win-system and macosx
     def get_comports(self):
         return serial.tools.list_ports.comports()
 
 
-    # interactive choice of COM-port
+    # interactive choice of COM-port (win and macosx tested!)
     def set_comport(self):
         while True:
             print("Determining COM-Ports...")
@@ -141,28 +141,38 @@ class robot():
             choice = input("Please choose: ")   # user input
 
 
-            # input processing
+            # [e]xit programm
             if choice == 'e':
                 break
 
+
+            # [i]nformation about the robot (data.py)
             elif choice == 'i':
                 for key, value in self.leg.leg_data.items():
                     print(key, " = ", value)
 
+
+            # [t]oggle torque-activation
             elif choice == 't':
                 self.toggle_torque()
 
+
+            # set movement [s]peed for all servos
             elif choice == 's':
-                self.leg.set_speed_for_all(int(input("Please input speed:")))
+                self.leg.set_speed_for_all(int(input("Please input speed:")))       # ?! whats this?
                 pass
                 #self.leg.set_speed(input("Please input speed (default: 1000):"))
 
+
+            # [r]ead present position
             elif choice == 'r':
                 angles = self.leg.get_current_degrees()
                 for servo_id, servo_pos in enumerate(angles):
                     print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
-                print("> leg", self.leg["id"], "is at XYZ (alpha2end):", forwardkin_alpha2end(self, angles[0], angles[1], angles[2], angles[3]))
+                print("> leg", self.leg["id"], "is at XYZ (alpha2end):", self.leg.forwardkin_alpha2end(*angles))
 
+
+            # move to [d]efault position
             elif choice == 'd':
                 if self.leg.torque:
                     offset = 0.005
@@ -173,15 +183,21 @@ class robot():
                         self.leg.test_servo_degree(id, pos, offset)
                 else: print("Please enable torque first!")
 
+            
+            # e[x]ecute dummy trajectory given in test_felix.py
             elif choice == 'x':
                 if self.leg.torque:
                     test_felix.run_trajectory(self.leg)
                 else:
                     print("Please enable torque first!")
 
+
+            # move [o]ne servo to position given in degrees
             elif choice == 'o':
                 self.leg.move_servo_to_degrees(int(input("Please input servo-id:")), float(input("Please input position:")))
 
+
+            # move [a]ll servos to destination given in degrees
             elif choice == 'a':
                 if self.leg.torque:
                     pos=list()
@@ -191,6 +207,8 @@ class robot():
                 else: print("Please enable torque first!")
                 #self.leg.move_to_deg([int(x) for x in input("Please input position (default: 0 0 90 90):").split()])
 
+
+            # else
             else:
                 print("Invalid input... Please try again")
 
