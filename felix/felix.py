@@ -124,7 +124,7 @@ class robot():
             'i' : "[i]nformation about the robot (data.py)",
             't' : "[t]oggle torque-activation",
             's' : "set movement [s]peed for all servos",
-            'r' : "[r]ead present position in degrees",
+            'r' : "[r]ead present position",
             'd' : "move to [d]efault position",
             'x' : "e[x]ecute dummy trajectory given in test_felix.py",
             'o' : "move [o]ne servo to position given in degrees",
@@ -158,8 +158,10 @@ class robot():
                 #self.leg.set_speed(input("Please input speed (default: 1000):"))
 
             elif choice == 'r':
-                for servo_id, servo_pos in enumerate(self.leg.get_current_degrees()):
+                angles = self.leg.get_current_degrees()
+                for servo_id, servo_pos in enumerate(angles):
                     print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
+                print("> leg", self.leg["id"], "is at XYZ (alpha2end):", forwardkin_alpha2end(self, angles[0], angles[1], angles[2], angles[3]))
 
             elif choice == 'd':
                 if self.leg.torque:
