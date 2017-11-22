@@ -18,9 +18,9 @@ except Exception as e:
     print(e)
 
 try:
-    from test_felix import run_trajectory
+    import test_felix
 except Exception as e:
-    print("Error: Importing run_trajectory failed!")
+    print("Error: Importing test_felix failed!")
     print(e)
 
 from data import robot_data         # servo constants
@@ -173,7 +173,7 @@ class robot():
 
             elif choice == 'x':
                 if self.leg.torque:
-                    run_trajectory(self.leg)
+                    test_felix.run_trajectory(self.leg)
                 else:
                     print("Please enable torque first!")
 
