@@ -61,11 +61,26 @@ class leg:
     # Public methods
     # =======================================
 
+<<<<<<< HEAD
     # (analytical) forward kinematics with angles given in radians (!)
     def forwardkin_alpha2end(self, alpha, gamma, beta, delta): # caution: changed beta and gamma!
         d0 = self.leg_data["d0"]
         a2 = self.leg_data["a2"]
         a3 = self.leg_data["a3"]
+=======
+    # (analytical) forward kinematics with angles given in degrees
+    def forwardkin_alpha2end(self, alpha, beta, gamma, delta):
+        
+        d0 = self.leg_data["d0"]
+        a2 = self.leg_data["a2"]
+        a3 = self.leg_data["a3"]
+        
+        alpha = np.radians(alpha)
+        beta = np.pi/2 + np.radians(beta)
+        gamma = np.pi/2 + np.radians(gamma)
+        delta = np.radians(delta)
+
+>>>>>>> 5debc1654c10aa348324b043f2139d39c1f07626
         pos = [0, 0, 0, 1]
         pos[0] = ( a3 * np.cos(delta) * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.cos(alpha) * np.cos(beta) * np.sin(gamma) + np.sin(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) )
         pos[1] = ( a3 * np.cos(delta) * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.sin(alpha) * np.cos(beta) * np.sin(gamma) - np.cos(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) )
