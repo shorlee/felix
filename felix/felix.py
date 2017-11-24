@@ -225,25 +225,23 @@ class robot():
 
             # [r]ead present position
             elif choice == 'r':
+                # -- angles
                 angles = self.leg.get_current_degrees()
                 for servo_id, servo_pos in enumerate(angles):
                     print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
-<<<<<<< HEAD
-                angles_rad= np.deg2rad(angles)
-                position=self.leg.forwardkin_alpha2end( angles_rad[0], angles_rad[1], angles_rad[2], angles_rad[3])
+                # -- xyz
+                position = self.leg.forwardkin_alpha2end(*angles)
                 print("> leg is at XYZ (alpha2end):", position)
-                saving=input("save angles and position (y/n) or print saved list (p)")
-                if saving =='y':
+                # -- save
+                saving = input("> save angles and position? (y/n)")
+                if saving == 'y':
                     self.write_angles_position(angles,position)
-                    print("saved angles and position")
-                if saving == 'p':
-                    self.read_angled_position_from_file()
+                    print("angles and position saved")
 
+
+            # [p]rint saved list of angles and positions
             elif choice == 'p':
                 self.print_angles_positions(self.read_angles_position_from_file())
-=======
-                print("> leg", self.leg["id"], "is at XYZ (alpha2end):", self.leg.forwardkin_alpha2end(*angles))
->>>>>>> 5debc1654c10aa348324b043f2139d39c1f07626
 
 
             # move to [d]efault position
