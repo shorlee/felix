@@ -13,11 +13,6 @@
 # TODO:
 # a) position-max and -min still in ticks
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> d7ff2612ecebe1f0033b10f8a151e07c3e5d5dcc
 
 import numpy as np
 
@@ -71,19 +66,4 @@ robot_data = [
                         "CLOCKWISE"         : False,     # positive
                         "SPEED_MAXIMUM"     : 10000     }]
             }]
-<<<<<<< HEAD
-}]
-                  
 
-
-     
-    
-    
-    
-    
-    
-                    
-                    
-=======
-}]
->>>>>>> d7ff2612ecebe1f0033b10f8a151e07c3e5d5dcc
