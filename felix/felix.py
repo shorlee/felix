@@ -26,6 +26,7 @@ except Exception as e:
 from data import robot_data         # servo constants
 import serial.tools.list_ports      # available COM-ports
 
+1
 
 class robot():
 
@@ -113,6 +114,43 @@ class robot():
     # =======================================
     # Public methods
     # =======================================
+        
+    #print robot_data     
+    def print_robot_data(self):
+        for robot in robot_data:
+            #print list of legs
+            print("\n")
+            print("Leg-Information:")
+            print("------------------------------------")
+            for leg in robot["legs"]:
+                print("\n")
+                for item in leg:
+                    #print("Information:",index,"Key:",item)
+                    #single items in id,servos etc
+                    
+                    if item is "T_base":
+                        print("\n")
+                        print("T_base:")
+                        #TODO: Print Tbase Array pretty
+                        for tbase in leg[item]:
+                            print(tbase)
+                        print("\n")
+                        
+                    elif item is "servos":
+                        print("\n")
+                        print("Servos")
+                        print("------------------------------------")
+                        print("\n")
+                        #print(item,leg[item])
+                        for i in leg[item]:
+                            for u in i:
+                                print('{:26} : {}'.format(u, i[u]))
+                            print("\n")
+                    else:
+                        #print('{:16}'.format(item) ,'{:>10}'.format(':') ,leg[item]) 
+                        print('{:26} : {}'.format(item,leg[item]))
+                  
+                print("------------------------------------")        
 
     # options
     def menu(self):
@@ -146,8 +184,10 @@ class robot():
                 break
 
             elif choice == 'i':
-                for key, value in self.leg.leg_data.items():
-                    print(key, " = ", value)
+                self.print_robot_data()
+                #for key, value in self.leg.leg_data.items():
+                    #print(key,)
+                #self.print_data() (only for self.leg !)
 
             elif choice == 't':
                 self.toggle_torque()
