@@ -13,6 +13,11 @@
 # TODO:
 # a) position-max and -min still in ticks
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> d7ff2612ecebe1f0033b10f8a151e07c3e5d5dcc
 
 import numpy as np
 
@@ -42,30 +47,31 @@ robot_data = [
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : 1,     
+                        "CLOCKWISE"         : True,    # negative
                         "SPEED_MAXIMUM"     : 10000     },
 
                     {   "ID"                : 2,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : 1,  
+                        "CLOCKWISE"         : False,     # positive
                         "SPEED_MAXIMUM"     : 10000     },
 
                     {   "ID"                : 3,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -45000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : 1,         
+                        "CLOCKWISE"         : True,    # negative
                         "SPEED_MAXIMUM"     : 10000     },
 
                     {   "ID"                : 4,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : 1,
+                        "CLOCKWISE"         : False,     # positive
                         "SPEED_MAXIMUM"     : 10000     }]
             }]
+<<<<<<< HEAD
 }]
                   
 
@@ -78,3 +84,6 @@ robot_data = [
     
                     
                     
+=======
+}]
+>>>>>>> d7ff2612ecebe1f0033b10f8a151e07c3e5d5dcc

@@ -18,17 +18,25 @@ except Exception as e:
     print(e)
 
 try:
-    from test_felix import run_trajectory
+    import test_felix
 except Exception as e:
-    print("Error: Importing run_trajectory failed!")
+    print("Error: Importing test_felix failed!")
     print(e)
 
 from data import robot_data         # servo constants
 import serial.tools.list_ports      # available COM-ports
+import numpy as np
+import copy
+
+
 
 1
 
 class robot():
+    # =======================================
+    # Private variables
+    # =======================================
+    OUTPUTFILE = "Output.txt"
 
     # =======================================
     # Public class attributes
@@ -74,12 +82,12 @@ class robot():
         return self.leg
 
 
-    # get a list of available COM-ports on a win-system
+    # get a list of available COM-ports on a win-system and macosx
     def get_comports(self):
         return serial.tools.list_ports.comports()
 
 
-    # interactive choice of COM-port
+    # interactive choice of COM-port (win and macosx tested!)
     def set_comport(self):
         while True:
             print("Determining COM-Ports...")
@@ -109,6 +117,56 @@ class robot():
         else:
             self.leg.disable_torque()
             print("Torque disabled.")
+
+    # save angles and position into an .txt file
+    def write_angles_position(self,angles, position):
+        try:
+            file = open(self.OUTPUTFILE, "a")
+        except Exception as e:
+            print("Error: Could not open file!")
+            print(e)
+            return()
+        text = ""
+        for angle in angles:
+            text = text + str("%.2f " % angle)
+        for comp in range(len(position)-1):
+            text = text + str("%.2f " % position[comp])
+        text = text + "\n"
+        file.write(text)
+        file.close()
+
+    # read angles and positions from txt. file
+    def read_angles_position_from_file(self):
+        try:
+            file = open(self.OUTPUTFILE, "r")
+        except Exception as e:
+            print("Error: Could not open file!")
+            print(e)
+            return()
+        text=file.readlines()
+        combined = list()
+        for line in text:
+            elements=line.split()
+            angles=list()
+            position=list()
+            for angle in range(0,4):
+                angles.append(elements[angle])
+            for pos in range(4,7):
+                position.append(elements[pos])
+            combined.append([angles,position])
+        return (combined)
+
+    # print list of angles and positions
+
+    def print_angles_positions(self,list):
+        for index, element in enumerate(list):
+            print("point:",index)
+            print("angles:")
+            for join, angle in enumerate(element[0]):
+                print(join,":",angle)
+            print("X:",element[1][0])
+            print("Y:", element[1][1])
+            print("Z:", element[1][2],"\n")
 
 
     # =======================================
@@ -162,7 +220,8 @@ class robot():
             'i' : "[i]nformation about the robot (data.py)",
             't' : "[t]oggle torque-activation",
             's' : "set movement [s]peed for all servos",
-            'r' : "[r]ead present position in degrees",
+            'r' : "[r]ead present position",
+            'p' : "[p]rint saved list of angles and positions",
             'd' : "move to [d]efault position",
             'x' : "e[x]ecute dummy trajectory given in test_felix.py",
             'o' : "move [o]ne servo to position given in degrees",
@@ -179,28 +238,53 @@ class robot():
             choice = input("Please choose: ")   # user input
 
 
-            # input processing
+            # [e]xit programm
             if choice == 'e':
                 break
 
+
+            # [i]nformation about the robot (data.py)
             elif choice == 'i':
                 self.print_robot_data()
                 #for key, value in self.leg.leg_data.items():
                     #print(key,)
                 #self.print_data() (only for self.leg !)
 
+
+            # [t]oggle torque-activation
             elif choice == 't':
                 self.toggle_torque()
 
+
+            # set movement [s]peed for all servos
             elif choice == 's':
-                self.leg.set_speed_for_all(int(input("Please input speed:")))
+                self.leg.set_speed_for_all(int(input("Please input speed:")))       # ?! whats this?
                 pass
                 #self.leg.set_speed(input("Please input speed (default: 1000):"))
 
-            elif choice == 'r':
-                for servo_id, servo_pos in enumerate(self.leg.get_current_degrees()):
-                    print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
 
+            # [r]ead present position
+            elif choice == 'r':
+                # -- angles
+                angles = self.leg.get_current_degrees()
+                for servo_id, servo_pos in enumerate(angles):
+                    print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
+                # -- xyz
+                position = self.leg.forwardkin_alpha2end(*angles)
+                print("> leg is at XYZ (alpha2end):", position)
+                # -- save
+                saving = input("> save angles and position? (y/n)")
+                if saving == 'y':
+                    self.write_angles_position(angles,position)
+                    print("angles and position saved")
+
+
+            # [p]rint saved list of angles and positions
+            elif choice == 'p':
+                self.print_angles_positions(self.read_angles_position_from_file())
+
+
+            # move to [d]efault position
             elif choice == 'd':
                 if self.leg.torque:
                     offset = 0.005
@@ -211,15 +295,21 @@ class robot():
                         self.leg.test_servo_degree(id, pos, offset)
                 else: print("Please enable torque first!")
 
+            
+            # e[x]ecute dummy trajectory given in test_felix.py
             elif choice == 'x':
                 if self.leg.torque:
-                    run_trajectory(self.leg)
+                    test_felix.run_trajectory(self.leg)
                 else:
                     print("Please enable torque first!")
 
+
+            # move [o]ne servo to position given in degrees
             elif choice == 'o':
                 self.leg.move_servo_to_degrees(int(input("Please input servo-id:")), float(input("Please input position:")))
 
+
+            # move [a]ll servos to destination given in degrees
             elif choice == 'a':
                 if self.leg.torque:
                     pos=list()
@@ -229,6 +319,8 @@ class robot():
                 else: print("Please enable torque first!")
                 #self.leg.move_to_deg([int(x) for x in input("Please input position (default: 0 0 90 90):").split()])
 
+
+            # else
             else:
                 print("Invalid input... Please try again")
 
@@ -249,3 +341,4 @@ def main():
 # jump to main
 if __name__ == '__main__':
     main()
+

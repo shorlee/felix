@@ -14,6 +14,7 @@
 
 import os
 import time
+import numpy as np
 
 try:
     from servo import servo
@@ -56,13 +57,24 @@ class leg:
                                      servo_dict["CLOCKWISE"], DEVICENAME))
         self.servos[0].initialize_port()    # do port intialization just once because of daisy chain
 
+        for servo_element in self.servos: servo_element.write_position_limits()
+
     # =======================================
     # Public methods
     # =======================================
 
-    # (analytical) forward kinematics with angles given in radians (!)
+    # (analytical) forward kinematics with angles given in degrees
     def forwardkin_alpha2end(self, alpha, beta, gamma, delta):
-        d0 = self.leg_data["d0"], a2 = self.leg_data["a2"], a3 = self.leg_data["a3"]
+        
+        d0 = self.leg_data["d0"]
+        a2 = self.leg_data["a2"]
+        a3 = self.leg_data["a3"]
+        
+        alpha = np.radians(alpha)
+        beta = np.pi/2 + np.radians(beta)
+        gamma =  np.radians(gamma) - np.pi/2
+        delta = np.radians(delta)
+
         pos = [0, 0, 0, 1]
         pos[0] = ( a3 * np.cos(delta) * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.cos(alpha) * np.cos(beta) * np.sin(gamma) + np.sin(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.cos(alpha) * np.cos(beta) * np.cos(gamma) + np.sin(alpha) * np.sin(gamma) ) )
         pos[1] = ( a3 * np.cos(delta) * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) ) + ( a3 * np.sin(delta) * ( -np.sin(alpha) * np.cos(beta) * np.sin(gamma) - np.cos(alpha) * np.cos(gamma) ) ) + ( a2 * ( np.sin(alpha) * np.cos(beta) * np.cos(gamma) - np.cos(alpha) * np.sin(gamma) ) )
