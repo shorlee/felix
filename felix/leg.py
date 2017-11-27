@@ -28,6 +28,8 @@ class leg:
     # Public class attributes
     # =======================================
 
+    #TODO: configure debug-structure (leg)
+
     # trace activation of torque
     torque = False
 
@@ -45,6 +47,9 @@ class leg:
 
         # save reference to dictionary
         self.leg_data = data
+
+
+        #TODO: optimize leg initialization
 
         # build servo objects
         self.servos = list()
@@ -177,8 +182,6 @@ class leg:
             pos=self.get_servo_current_degree(servoID)
             if deg-offset<pos < deg+offset:
                 return
-
-
 
 
     # Close communication with servos

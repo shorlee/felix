@@ -10,8 +10,6 @@
 # project: felix
 # servo-specific settings
 # ------------------------------------------------
-# TODO:
-# a) position-max and -min still in ticks
 
 #number of legs
 NUMBER_OF_LEGS     =   1

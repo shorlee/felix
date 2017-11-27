@@ -33,6 +33,9 @@ class robot():
     # Public class attributes
     # =======================================
     
+    #TODO: configure debug-structure (robot)
+
+
     # =======================================
     # Private methods
     # =======================================
@@ -51,7 +54,7 @@ class robot():
             return
 
         # Wake up...
-        self.leg = leg(robot_data[0]["legs"][0], DEVICENAME)    # here just robot 0 and its leg 0
+        self.leg = leg(robot_data[0]["legs"][0], DEVICENAME)    # here its just robot 0 and its leg 0
 
 
     # Destructor

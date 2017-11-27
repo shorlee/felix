@@ -27,6 +27,10 @@ class servo:
     # Public class attributes
     # =======================================
 
+    #TODO: configure debug-structure (servo)
+
+    #TODO: maybe build a dictionary?
+
     # Control table address
     ADDR_PRO_TORQUE_ENABLE = 562
     ADDR_PRO_GOAL_POSITION = 596
@@ -62,14 +66,15 @@ class servo:
 
     # Constructor saves motor-specific settings
     def __init__(self, DXL_ID, BAUDRATE, POS_MIN, POS_MAX, CLOCKWISE, DEVICENAME):
+
+        #TODO: optimize initialization
+
         self.ID = DXL_ID
         self.BAUDRATE = BAUDRATE
         self.POS_MIN = POS_MIN
         self.POS_MAX = POS_MAX
         self.CLOCKWISE = CLOCKWISE
         self.DEVICENAME = DEVICENAME
-
-        # maybe initalize_port() ??
 
 
     # =======================================
