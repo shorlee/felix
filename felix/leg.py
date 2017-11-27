@@ -14,6 +14,7 @@
 
 import os
 import time
+import numpy as np
 
 try:
     from servo import servo
@@ -61,6 +62,8 @@ class leg:
                                      servo_dict["CLOCKWISE"], DEVICENAME))
         self.servos[0].initialize_port()    # do port intialization just once because of daisy chain
 
+        for servo_element in self.servos: servo_element.write_position_limits()
+
     # =======================================
     # Public methods
     # =======================================
@@ -74,7 +77,7 @@ class leg:
         
         alpha = np.radians(alpha)
         beta = np.pi/2 + np.radians(beta)
-        gamma = np.pi/2 + np.radians(gamma)
+        gamma =  np.radians(gamma) - np.pi/2
         delta = np.radians(delta)
 
         pos = [0, 0, 0, 1]

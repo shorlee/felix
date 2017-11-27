@@ -25,9 +25,18 @@ except Exception as e:
 
 from data import robot_data         # servo constants
 import serial.tools.list_ports      # available COM-ports
+import numpy as np
+import copy
 
+
+
+1
 
 class robot():
+    # =======================================
+    # Private variables
+    # =======================================
+    OUTPUTFILE = "Output.txt"
 
     # =======================================
     # Public class attributes
@@ -112,10 +121,97 @@ class robot():
             self.leg.disable_torque()
             print("Torque disabled.")
 
+    # save angles and position into an .txt file
+    def write_angles_position(self,angles, position):
+        try:
+            file = open(self.OUTPUTFILE, "a")
+        except Exception as e:
+            print("Error: Could not open file!")
+            print(e)
+            return()
+        text = ""
+        for angle in angles:
+            text = text + str("%.2f " % angle)
+        for comp in range(len(position)-1):
+            text = text + str("%.2f " % position[comp])
+        text = text + "\n"
+        file.write(text)
+        file.close()
+
+    # read angles and positions from txt. file
+    def read_angles_position_from_file(self):
+        try:
+            file = open(self.OUTPUTFILE, "r")
+        except Exception as e:
+            print("Error: Could not open file!")
+            print(e)
+            return()
+        text=file.readlines()
+        combined = list()
+        for line in text:
+            elements=line.split()
+            angles=list()
+            position=list()
+            for angle in range(0,4):
+                angles.append(elements[angle])
+            for pos in range(4,7):
+                position.append(elements[pos])
+            combined.append([angles,position])
+        return (combined)
+
+    # print list of angles and positions
+
+    def print_angles_positions(self,list):
+        for index, element in enumerate(list):
+            print("point:",index)
+            print("angles:")
+            for join, angle in enumerate(element[0]):
+                print(join,":",angle)
+            print("X:",element[1][0])
+            print("Y:", element[1][1])
+            print("Z:", element[1][2],"\n")
+
 
     # =======================================
     # Public methods
     # =======================================
+        
+    #print robot_data     
+    def print_robot_data(self):
+        for robot in robot_data:
+            #print list of legs
+            print("\n")
+            print("Leg-Information:")
+            print("------------------------------------")
+            for leg in robot["legs"]:
+                print("\n")
+                for item in leg:
+                    #print("Information:",index,"Key:",item)
+                    #single items in id,servos etc
+                    
+                    if item is "T_base":
+                        print("\n")
+                        print("T_base:")
+                        #TODO: Print Tbase Array pretty
+                        for tbase in leg[item]:
+                            print(tbase)
+                        print("\n")
+                        
+                    elif item is "servos":
+                        print("\n")
+                        print("Servos")
+                        print("------------------------------------")
+                        print("\n")
+                        #print(item,leg[item])
+                        for i in leg[item]:
+                            for u in i:
+                                print('{:26} : {}'.format(u, i[u]))
+                            print("\n")
+                    else:
+                        #print('{:16}'.format(item) ,'{:>10}'.format(':') ,leg[item]) 
+                        print('{:26} : {}'.format(item,leg[item]))
+                  
+                print("------------------------------------")        
 
     # options
     def menu(self):
@@ -128,6 +224,7 @@ class robot():
             't' : "[t]oggle torque-activation",
             's' : "set movement [s]peed for all servos",
             'r' : "[r]ead present position",
+            'p' : "[p]rint saved list of angles and positions",
             'd' : "move to [d]efault position",
             'x' : "e[x]ecute dummy trajectory given in test_felix.py",
             'o' : "move [o]ne servo to position given in degrees",
@@ -151,8 +248,10 @@ class robot():
 
             # [i]nformation about the robot (data.py)
             elif choice == 'i':
-                for key, value in self.leg.leg_data.items():
-                    print(key, " = ", value)
+                self.print_robot_data()
+                #for key, value in self.leg.leg_data.items():
+                    #print(key,)
+                #self.print_data() (only for self.leg !)
 
 
             # [t]oggle torque-activation
@@ -169,10 +268,23 @@ class robot():
 
             # [r]ead present position
             elif choice == 'r':
+                # -- angles
                 angles = self.leg.get_current_degrees()
                 for servo_id, servo_pos in enumerate(angles):
                     print("> servo", servo_id, "is at %7.3f degree." % servo_pos)
-                print("> leg", self.leg["id"], "is at XYZ (alpha2end):", self.leg.forwardkin_alpha2end(*angles))
+                # -- xyz
+                position = self.leg.forwardkin_alpha2end(*angles)
+                print("> leg is at XYZ (alpha2end):", position)
+                # -- save
+                saving = input("> save angles and position? (y/n)")
+                if saving == 'y':
+                    self.write_angles_position(angles,position)
+                    print("angles and position saved")
+
+
+            # [p]rint saved list of angles and positions
+            elif choice == 'p':
+                self.print_angles_positions(self.read_angles_position_from_file())
 
 
             # move to [d]efault position
@@ -232,3 +344,4 @@ def main():
 # jump to main
 if __name__ == '__main__':
     main()
+
