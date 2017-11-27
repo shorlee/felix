@@ -30,13 +30,8 @@ import copy
 
 
 
-1
 
 class robot():
-    # =======================================
-    # Private variables
-    # =======================================
-    OUTPUTFILE = "Output.txt"
 
     # =======================================
     # Public class attributes
@@ -44,6 +39,7 @@ class robot():
     
     #TODO: configure debug-structure (robot)
 
+    OUTPUTFILE = "Output.txt"
 
     # =======================================
     # Private methods
