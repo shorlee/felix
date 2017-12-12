@@ -180,31 +180,26 @@ class robot():
             print("Leg-Information:")
             print("------------------------------------")
             for leg in robot["legs"]:
-                print("\n")
                 for item in leg:
-                    #print("Information:",index,"Key:",item)
-                    #single items in id,servos etc
-                    
                     if item is "T_base":
                         print("\n")
                         print("T_base:")
-                        #TODO: Print Tbase Array pretty
-                        for tbase in leg[item]:
-                            print(tbase)
                         print("\n")
-                        
+                        for tbase in leg[item]:
+                            for column in tbase:
+                                print('{:10}'.format(column), end=' ')   
+                            print("\n")
                     elif item is "servos":
                         print("\n")
                         print("Servos")
                         print("------------------------------------")
                         print("\n")
-                        #print(item,leg[item])
-                        for i in leg[item]:
-                            for u in i:
-                                print('{:26} : {}'.format(u, i[u]))
-                            print("\n")
+                        for servo in leg[item]:
+                            for key,value in servo.items():
+                                print('{:26} : {}'.format(key,value))
+                            print("\n")  
                     else:
-                        #print('{:16}'.format(item) ,'{:>10}'.format(':') ,leg[item]) 
+                        print("\n")
                         print('{:26} : {}'.format(item,leg[item]))
                   
                 print("------------------------------------")        
