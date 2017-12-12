@@ -68,6 +68,8 @@ class leg:
     # Public methods
     # =======================================
 
+    #TODO: leg speed adjustment for equal servo movement times while reaching destination
+
     # (analytical) forward kinematics with angles given in degrees
     def forwardkin_alpha2end(self, alpha, beta, gamma, delta):
         
@@ -158,6 +160,7 @@ class leg:
             ticks.append(self.servos[i].deg_to_tick(deg[i]))
         return ticks
 
+    #TODO: what?
     # Test is present position in ticks is in range pos +- offset for all servos
     def test_position(self,pos,offset):
         current_pos=self.get_current_position()
@@ -169,7 +172,7 @@ class leg:
                 if self.debug: print("position reached!")
                 return True
 
-
+    #TODO: what?
     # Test is present position in degrees is in range deg +- offset for all servos
     def test_degrees(self,deg,offset):
         pos=list()
