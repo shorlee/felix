@@ -30,6 +30,7 @@ var/
 
 # visual studio
 .vs/
+.vscode/
 
 # User-specific files
 *.suo
