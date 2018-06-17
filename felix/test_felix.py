@@ -13,6 +13,10 @@
 
 import os
 import msvcrt
+import logging
+
+logger = logging.getLogger(__name__)
+logger.debug('Logging in {0} started.'.format(__name__))
 
 from felix import robot
 

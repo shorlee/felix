@@ -5,7 +5,7 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Michel Asmus, Marcel Bernauer, Phil Petschull
+# Michel Asmus, Marcel Bernauer
 # ------------------------------------------------
 # project: felix
 # leg-class
@@ -15,12 +15,17 @@
 import os
 import time
 import numpy as np
+import logging
+
+logger = logging.getLogger(__name__)
+logger.debug('Logging in {0} started.'.format(__name__))
 
 try:
     from servo import servo
+    logger.debug('Imported servo.')
 except Exception as e:
-    print("Error: Importing servo failed!")
-    print(e)
+    logger.critical('Importing servo failed!')
+    logger.debug(e)
 
 
 class leg:
@@ -49,7 +54,6 @@ class leg:
         # save reference to dictionary
         self.leg_data = data
 
-
         #TODO: optimize leg initialization
 
         # build servo objects
@@ -60,9 +64,13 @@ class leg:
             self.servos.append(servo(servo_dict["ID"], servo_dict["BAUDRATE"],
                                      servo_dict["POSITION_MINIMUM"], servo_dict["POSITION_MAXIMUM"],
                                      servo_dict["CLOCKWISE"], DEVICENAME))
-        self.servos[0].initialize_port()    # do port intialization just once because of daisy chain
-
-        for servo_element in self.servos: servo_element.write_position_limits()
+                                     
+        if DEVICENAME:
+            logger.info('Initializing of servos.')
+            self.servos[0].initialize_port()    # do port intialization just once because of daisy chain
+            for servo_element in self.servos: servo_element.write_position_limits()
+        else:
+            logger.warning('Skipping initializing of servos. Working in simulation mode.')
 
     # =======================================
     # Public methods
@@ -92,14 +100,14 @@ class leg:
     # Activates power consumption for halting position on all motors
     def enable_torque(self):
         leg.torque = True
-        for i in self.servos:
-            i.enable_torque()
+        for servo in self.servos:
+            servo.enable_torque()
 
     # Deactivates power consumption for manual operation on all motors
     def disable_torque(self):
         leg.torque = False
-        for i in self.servos:
-            i.disable_torque()
+        for servo in self.servos:
+            servo.disable_torque()
 
     # Moves all motors to its target positions given in ticks
     def move_to_pos(self, pos):

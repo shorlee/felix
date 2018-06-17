@@ -5,7 +5,7 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Michel Asmus, Marcel Bernauer, Phil Petschull
+# Michel Asmus, Marcel Bernauer
 # ------------------------------------------------
 # project: felix
 # servo-class
@@ -13,12 +13,18 @@
 
 import os
 import math
+import logging
+import sys
+
+logger = logging.getLogger(__name__)
+logger.debug('Logging in {0} started.'.format(__name__))
 
 try:
     import dynamixel_functions as dynamixel
+    logger.debug('Imported dynamixel_functions.')
 except Exception as e:
-    print("Error: Importing dynamixel_functions failed!")
-    print(e)
+    logger.critical("Importing dynamixel_functions failed!")
+    logger.debug(e)
 
 
 class servo:
@@ -85,27 +91,30 @@ class servo:
 
     # Establishes a connection to the motor and transmits motor-specific settings
     def initialize_port(self):
+        try:
+            servo.port_num = dynamixel.portHandler(self.DEVICENAME)
+        except Exception as e:
+            logger.critical('Working with dynamixel porthandler failed. Exiting...')
+            logger.debug(e)
+            quit()
 
-        servo.port_num = dynamixel.portHandler(self.DEVICENAME)
         dynamixel.packetHandler()
         success_open_port = dynamixel.openPort(servo.port_num)
 
         if servo.debug:
             if success_open_port:
-                print("Succeeded to open the port!")
+                logger.info("Succeeded to open the port!")
             else:
-                print("Failed to open the port!")
-                input("Press any key to terminate...")
+                logger.critical("Failed to open the port! Exiting...")
                 quit()
 
         if success_open_port:
             success_set_baudrate = dynamixel.setBaudRate(servo.port_num, self.BAUDRATE)
             if servo.debug:
                 if success_set_baudrate:
-                    print("Succeeded to change the baudrate!")
+                    logger.info("Succeeded to change the baudrate!")
                 else:
-                    print("Failed to change the baudrate!")
-                    input("Press any key to terminate...")
+                    logger.critical("Failed to change the baudrate! Exiting...")
                     quit()
 
 
