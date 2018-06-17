@@ -23,9 +23,9 @@ args = parser.parse_args()
 import logging
 
 if args.debug:
-    logging.basicConfig(format='%(asctime)s - %(levelname)8s - %(filename)14s - %(message)s', level=logging.DEBUG)
+    logging.basicConfig(datefmt='%H:%M:%S', format='%(asctime)s.%(msecs)03d - %(levelname)8s - %(filename)14s - %(message)s', level=logging.DEBUG)
 else:
-    logging.basicConfig(format='%(asctime)s - %(levelname)8s - %(filename)14s - %(message)s', level=logging.INFO)
+    logging.basicConfig(datefmt='%H:%M:%S', format='%(asctime)s.%(msecs)03d - %(levelname)8s - %(filename)14s - %(message)s', level=logging.INFO)
 
 logger = logging.getLogger(__name__)
 logger.debug('Logging in {0} started.'.format(__name__))
@@ -215,35 +215,18 @@ class robot():
         
     #print robot_data     
     def print_robot_data(self):
-        for robot in robot_data:
-            #print list of legs
-            print('\n')
-            print('Leg-Information:')
-            print('------------------------------------')
-            for leg in robot['legs']:
-                for item in leg:
-                    if item is 'T_base':
-                        print('\n')
-                        print('T_base:')
-                        print('\n')
-                        for tbase in leg[item]:
-                            for column in tbase:
-                                print('{:10}'.format(column), end=' ')   
-                            print('\n')
-                    elif item is 'servos':
-                        print('\n')
-                        print('Servos')
-                        print('------------------------------------')
-                        print('\n')
-                        for servo in leg[item]:
-                            for key,value in servo.items():
-                                print('{:26} : {}'.format(key,value))
-                            print('\n')  
+        for robot_id, robot_element in enumerate(robot_data):
+            print('\n> robot {0}'.format(robot_id))
+            for leg_id, leg_element in enumerate(robot_element['legs']):
+                print('\n> > leg {0}\n'.format(leg_id))
+                for leg_info, leg_value in leg_element.items():
+                    if leg_info is 'servos':
+                        for servo_id, servo_element in enumerate(leg_value):
+                            print('\n> > > servo {0}\n'.format(servo_id))
+                            for servo_key, servo_value in servo_element.items():
+                                print('--- {0}\n{1}'.format(servo_key, servo_value))
                     else:
-                        print('\n')
-                        print('{:26} : {}'.format(item,leg[item]))
-                  
-                print('------------------------------------')        
+                        print('-- {0}\n{1}'.format(leg_info, leg_value))
 
     # options
     def menu(self):
