@@ -5,10 +5,10 @@
 # Fachhochschule Bielefeld
 # Ingenieurwissenschaften und Mathematik
 # Ingenieurinformatik - Studienarbeit
-# Michel Asmus, Marcel Bernauer, Phil Petschull
+# Michel Asmus, Marcel Bernauer
 # ------------------------------------------------
 # project: felix
-# servo-specific settings
+# robot-specific settings
 # ------------------------------------------------
 
 
