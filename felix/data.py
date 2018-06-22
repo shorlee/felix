@@ -40,14 +40,14 @@ robot_data = [
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : True,    # negative
+                        "CLOCKWISE"         : True,    # positive
                         "SPEED_MAXIMUM"     : 10000     },
 
                     {   "ID"                : 2,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : False,     # positive
+                        "CLOCKWISE"         : True,     # positive
                         "SPEED_MAXIMUM"     : 10000     },
 
                     {   "ID"                : 3,
@@ -61,7 +61,7 @@ robot_data = [
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
-                        "CLOCKWISE"         : False,     # positive
+                        "CLOCKWISE"         : True,     # negative
                         "SPEED_MAXIMUM"     : 10000     }]
             }]
         }]
