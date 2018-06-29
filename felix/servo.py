@@ -128,11 +128,11 @@ class servo:
                                  self.TORQUE_ENABLE)
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
 
     # Deactivates power consumption for manual operation
     def disable_torque(self):
@@ -140,11 +140,11 @@ class servo:
                                  servo.TORQUE_DISABLE)
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
 
     # Moves to target position
     def write_position(self, dxl_goal_position):
@@ -154,14 +154,13 @@ class servo:
                                  dxl_goal_position)
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
-        if self.debug:
-            if dxl_goal_position > self.POS_MAX or dxl_goal_position < self.POS_MIN:
-                print("Goalposition of Servo ", self.ID, " out of range!")
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        if dxl_goal_position > self.POS_MAX or dxl_goal_position < self.POS_MIN:
+            logger.error('Goalposition of Servo {0} out of range!'.format(self.ID))
 
     # Returns present position
     def read_present_position(self):
@@ -174,57 +173,59 @@ class servo:
             if not self.CLOCKWISE:
                 dxl_present_position=dxl_present_position*(-1)
             return dxl_present_position
+        #-
         else:
-            if servo.debug:
-                if dxl_comm_result != servo.COMM_SUCCESS:
-                    print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-                elif dxl_error != 0:
-                    print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
-            return servo.read_present_position(self)
+            if dxl_comm_result != servo.COMM_SUCCESS:
+                logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+            elif dxl_error != 0:
+                logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        return servo.read_present_position(self)
 
 
-    # Sets desired velocity of movement
+    # Set desired velocity of movement
     def write_velocity(self, dxl_goal_velocity):
         dynamixel.write4ByteTxRx(servo.port_num, servo.PROTOCOL_VERSION, self.ID, servo.ADDR_PRO_GOAL_VELOCITY,
                                  dxl_goal_velocity)
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
 
-    # Sets maximum and minimum of possible position
+    # Set maximum and minimum of possible position
     # Positions given in ticks
     def write_position_limits(self):
+
         #try to change maximum position
         dynamixel.write4ByteTxRx(servo.port_num, servo.PROTOCOL_VERSION, self.ID, servo.ADDR_PRO_MAX_POSITION_LIMIT, self.POS_MAX )
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print("successfully changed maximum position")
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.info("successfully changed maximum position")
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+
         # try to change minimum position
         dynamixel.write4ByteTxRx(servo.port_num, servo.PROTOCOL_VERSION, self.ID, servo.ADDR_PRO_MIN_POSITION_LIMIT, self.POS_MIN)
         dxl_comm_result = dynamixel.getLastTxRxResult(servo.port_num, servo.PROTOCOL_VERSION)
         dxl_error = dynamixel.getLastRxPacketError(servo.port_num, servo.PROTOCOL_VERSION)
-        if servo.debug:
-            if dxl_comm_result != servo.COMM_SUCCESS:
-                print("successfully changed minimum position")
-                print(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
-            elif dxl_error != 0:
-                print(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
+        #-
+        if dxl_comm_result != servo.COMM_SUCCESS:
+            logger.info("successfully changed minimum position")
+            logger.debug(dynamixel.getTxRxResult(servo.PROTOCOL_VERSION, dxl_comm_result))
+        elif dxl_error != 0:
+            logger.error(dynamixel.getRxPacketError(servo.PROTOCOL_VERSION, dxl_error))
 
-    # Convert ticks into degrees
+    # Convert ticks to degrees
     def tick_to_deg(self, tick):
         deg = tick*(180/(self.ticks_per_turn/2))
         return deg
 
-    # Convert degrees into ticks
+    # Convert degrees to ticks
     def deg_to_tick(self, deg):
         tick = int(float(deg)*(151875/180))
         return tick

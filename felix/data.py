@@ -41,27 +41,39 @@ robot_data = [
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
                         "CLOCKWISE"         : True,    # positive
-                        "SPEED_MAXIMUM"     : 10000     },
+                        "SPEED_MAXIMUM"     : 10000,
+                        "current_velocity"  : 0,
+                        "current_angle"     : 0,
+                        "next_angle"        : 0        },
 
                     {   "ID"                : 2,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
                         "CLOCKWISE"         : True,     # positive
-                        "SPEED_MAXIMUM"     : 10000     },
+                        "SPEED_MAXIMUM"     : 10000,
+                        "current_velocity"  : 0,
+                        "current_angle"     : 0,
+                        "next_angle"        : 0        },
 
                     {   "ID"                : 3,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -45000,
                         "POSITION_MAXIMUM"  : 76000,
                         "CLOCKWISE"         : True,    # negative
-                        "SPEED_MAXIMUM"     : 10000     },
+                        "SPEED_MAXIMUM"     : 10000,
+                        "current_velocity"  : 0,
+                        "current_angle"     : 0,
+                        "next_angle"        : 0        },
 
                     {   "ID"                : 4,
                         "BAUDRATE"          : 1000000,
                         "POSITION_MINIMUM"  : -76000,
                         "POSITION_MAXIMUM"  : 76000,
                         "CLOCKWISE"         : True,     # negative
-                        "SPEED_MAXIMUM"     : 10000     }]
+                        "SPEED_MAXIMUM"     : 10000,
+                        "current_velocity"  : 0,
+                        "current_angle"     : 0,
+                        "next_angle"        : 0        }]
             }]
         }]
